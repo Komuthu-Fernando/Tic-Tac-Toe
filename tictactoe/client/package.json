@@ -1,5 +1,12 @@
 {
   "name": "@tictactoe/client",
   "version": "0.0.1",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "jwt-decode": "^4.0.0",
+    "postcss": "^8.5.6",
+    "socket.io-client": "^4.8.1",
+    "tailwindcss": "^4.1.13"
+  }
 }

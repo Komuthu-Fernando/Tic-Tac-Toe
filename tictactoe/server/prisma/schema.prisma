@@ -14,12 +14,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id        Int      @id @default(autoincrement())
   username  String   @unique
   email     String   @unique
   password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  gamesAsX Game[] @relation("PlayerX")
+  gamesAsO Game[] @relation("PlayerO")
+}
+
+model Game {
+  id        Int      @id @default(autoincrement())
+  roomId    String   @unique
+  playerX   User     @relation("PlayerX", fields: [playerXId], references: [id])
+  playerXId Int
+  playerO   User?    @relation("PlayerO", fields: [playerOId], references: [id])
+  playerOId Int?
+  status    String   @default("waiting") // waiting | ongoing | finished
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
