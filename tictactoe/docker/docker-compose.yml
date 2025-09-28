@@ -1,0 +1,16 @@
+services:
+  mysql:
+    image: mysql:8
+    container_name: tictactoe-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: tictactoe
+      MYSQL_USER: tictactoe_user
+      MYSQL_PASSWORD: password123
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+volumes:
+  db_data:
