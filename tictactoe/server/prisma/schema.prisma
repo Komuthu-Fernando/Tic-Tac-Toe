@@ -25,6 +25,7 @@ model User {
   // Relations
   gamesAsX Game[] @relation("PlayerX")
   gamesAsO Game[] @relation("PlayerO")
+  Game     Game[]
 }
 
 model Game {
@@ -35,6 +36,11 @@ model Game {
   playerO   User?    @relation("PlayerO", fields: [playerOId], references: [id])
   playerOId Int?
   status    String   @default("waiting") // waiting | ongoing | finished
+  moves     Json? // stores array of moves
+  winnerId  Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // optional relation to winner user
+  winner User? @relation(fields: [winnerId], references: [id])
 }

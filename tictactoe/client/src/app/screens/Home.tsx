@@ -16,7 +16,7 @@ export default function Home() {
   if (token) {
     try {
       const decoded: any = jwtDecode(token);
-      userId = decoded.id; // adjust if your backend uses "userId" instead of "id"
+      userId = decoded.id; 
     } catch (err) {
       console.error("Invalid token", err);
     }
@@ -30,7 +30,7 @@ export default function Home() {
       console.log(data.message);
     });
 
-    socket.on("game_start", (gameData) => {
+    socket.on("game_started", (gameData) => {
       setGame(gameData);
       navigate(`/game/${gameData.roomId}`);
     });
@@ -47,7 +47,7 @@ export default function Home() {
       console.error("No userId found, please log in first");
       return;
     }
-    socket.emit("join_game", userId);
+    socket.emit("join_game", { userId });
   };
 
   return (
