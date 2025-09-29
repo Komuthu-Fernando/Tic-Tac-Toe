@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaSignOutAlt, FaTrophy, FaGamepad } from "react-icons/fa";
 
 let socket: Socket;
 
@@ -16,9 +19,12 @@ export default function Home() {
   if (token) {
     try {
       const decoded: any = jwtDecode(token);
-      userId = decoded.id; 
+      userId = decoded.id;
     } catch (err) {
       console.error("Invalid token", err);
+      toast.error("Invalid token, please login again", { position: "top-center" });
+      localStorage.removeItem("token");
+      navigate("/");
     }
   }
 
@@ -27,7 +33,7 @@ export default function Home() {
 
     socket.on("waiting", (data) => {
       setWaiting(true);
-      console.log(data.message);
+      toast.info(data.message, { position: "top-center" });
     });
 
     socket.on("game_started", (gameData) => {
@@ -36,15 +42,13 @@ export default function Home() {
     });
 
     return () => {
-      if (socket) {
-        socket.disconnect();
-      }
+      if (socket) socket.disconnect();
     };
   }, [navigate]);
 
   const handleJoinGame = () => {
     if (!userId) {
-      console.error("No userId found, please log in first");
+      toast.error("No userId found, please log in first", { position: "top-center" });
       return;
     }
     socket.emit("join_game", { userId });
@@ -52,7 +56,8 @@ export default function Home() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/login"); // redirect back to login
+    toast.success("Logged out successfully", { position: "top-center" });
+    navigate("/");
   };
 
   const goToLeaderboard = () => {
@@ -60,41 +65,59 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-900 via-blue-900 to-black p-4">
-      {/* Header with Logout & Leaderboard */}
-      <div className="absolute top-4 right-4 flex space-x-4">
-        <button
-          onClick={goToLeaderboard}
-          className="px-4 py-2 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition-all"
-        >
-          Leaderboard
-        </button>
+    <div className="relative flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-900 via-blue-900 to-black p-4 overflow-hidden">
+
+      {/* Animated Background Glow */}
+      <div className="absolute inset-0 bg-purple-700/20 rounded-full animate-pulse-slow blur-3xl z-0"></div>
+
+      {/* Header Logout */}
+      <div className="absolute top-4 right-4 z-10">
         <button
           onClick={handleLogout}
-          className="px-4 py-2 bg-red-600 text-white font-bold rounded-lg shadow-md hover:bg-red-700 transition-all"
+          className="flex items-center gap-2 px-4 py-2 bg-red-700/80 hover:bg-red-600/80 text-white font-bold rounded-xl shadow-md transform transition-all hover:scale-105"
         >
-          Logout
+          <FaSignOutAlt /> Logout
         </button>
       </div>
 
-      <h1 className="text-4xl text-white font-bold mb-8 text-center animate-pulse">
+      {/* Main Title */}
+      <h1 className="text-4xl sm:text-5xl text-white font-bold mb-12 text-center animate-pulse z-10">
         Tic-Tac-Toe Lobby
       </h1>
 
+      {/* Join Game */}
       {!waiting && !game && (
-        <button
-          onClick={handleJoinGame}
-          className="px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold rounded-xl shadow-2xl transform transition-all hover:scale-110 hover:from-blue-500 hover:to-purple-500"
-        >
-          Join Game
-        </button>
+        <div className="flex flex-col items-center">
+          <button
+            onClick={handleJoinGame}
+            className="flex items-center gap-3 px-12 py-4 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-2xl shadow-2xl transform transition-all hover:scale-110 z-10"
+          >
+            <FaGamepad className="animate-bounce" /> Join Game
+          </button>
+          <p className="text-gray-300 text-sm mt-2 text-center max-w-xs">
+            Connect automatically with another online player and start playing instantly.
+          </p>
+        </div>
       )}
 
       {waiting && (
-        <p className="text-white text-lg mt-6 animate-pulse">
+        <p className="text-white text-lg mt-6 animate-pulse z-10">
           Waiting for another player...
         </p>
       )}
+
+      {/* Leaderboard Section */}
+      <div className="mt-12 z-10 w-full max-w-md flex flex-col items-center">
+        <h2 className="text-2xl text-white font-semibold mb-4 flex items-center justify-center gap-2">
+          <FaTrophy /> Leaderboard
+        </h2>
+        <button
+          onClick={goToLeaderboard}
+          className="flex items-center gap-3 px-12 py-4 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-2xl shadow-2xl transform transition-all hover:scale-110 z-10"
+        >
+          <FaTrophy /> View Leaderboard
+        </button>
+      </div>
     </div>
   );
 }
