@@ -262,32 +262,47 @@ export const handleSockets = (io: Server) => {
     );
 
     // allow clients to join an existing room socket namespace for move updates if reconnecting
-    socket.on('join_room', (payload: { roomId: string; userId: number }) => {
-      const { roomId, userId } = payload;
-      const state = rooms.get(roomId);
-      if (!state) {
-        socket.emit('error_msg', { message: 'Room not found' });
-        return;
+    socket.on(
+      'join_room',
+      async (payload: { roomId: string; userId: number }) => {
+        const { roomId, userId } = payload;
+        const state = rooms.get(roomId);
+        if (!state) {
+          socket.emit('error_msg', { message: 'Room not found' });
+          return;
+        }
+
+        // allow join only if user is one of players (or spectator later)
+        if (!state.players[userId]) {
+          socket.emit('error_msg', { message: 'You are not a player' });
+          return;
+        }
+
+        socket.join(roomId);
+        state.sockets[socket.id] = userId;
+
+        // fetch usernames for all players in this room
+        const playerData = await Promise.all(
+          Object.keys(state.players).map(async (idStr) => {
+            const id = parseInt(idStr);
+            const user = await prisma.user.findUnique({ where: { id } });
+            return {
+              userId: id,
+              mark: state.players[id],
+              username: user?.username || `Player ${id}`,
+            };
+          })
+        );
+
+        socket.emit('room_state', {
+          board: state.board,
+          turn: state.turn,
+          players: playerData, // send array with username, userId, mark
+          moves: state.moves,
+          status: state.status,
+        });
       }
-
-      // allow join only if user is one of players (or spectator later)
-      if (!state.players[userId]) {
-        socket.emit('error_msg', { message: 'You are not a player' });
-        return;
-      }
-
-      socket.join(roomId);
-      state.sockets[socket.id] = userId;
-
-      // send current state
-      socket.emit('room_state', {
-        board: state.board,
-        turn: state.turn,
-        players: state.players,
-        moves: state.moves,
-        status: state.status,
-      });
-    });
+    );
 
     socket.on('disconnect', () => {
       // cleanup waiting player if needed
