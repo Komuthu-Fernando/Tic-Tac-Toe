@@ -13,7 +13,7 @@ export default function Home() {
   const [waiting, setWaiting] = useState(false);
   const [game, setGame] = useState<any>(null);
 
-  const API_URL = import.meta.env.API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const token = localStorage.getItem("token");
   let userId: number | null = null;
@@ -31,7 +31,7 @@ export default function Home() {
   }
 
   useEffect(() => {
-    socket = io("http://localhost:5000/");
+    socket = io(API_URL);
 
     socket.on("waiting", (data) => {
       setWaiting(true);

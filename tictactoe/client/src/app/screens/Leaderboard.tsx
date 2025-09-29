@@ -15,10 +15,10 @@ interface LeaderboardEntry {
 export default function Leaderboard() {
   const navigate = useNavigate();
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
-  const API_URL = import.meta.env.API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const fetchLeaderboard = async () => {
-    const res = await fetch("http://localhost:5000/api/leaderboard");
+    const res = await fetch(`${API_URL}/api/leaderboard`);
     const data = await res.json();
     setLeaderboard(data);
   };
