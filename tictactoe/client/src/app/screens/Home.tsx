@@ -13,6 +13,8 @@ export default function Home() {
   const [waiting, setWaiting] = useState(false);
   const [game, setGame] = useState<any>(null);
 
+  const API_URL = import.meta.env.API_URL;
+
   const token = localStorage.getItem("token");
   let userId: number | null = null;
 
@@ -29,7 +31,7 @@ export default function Home() {
   }
 
   useEffect(() => {
-    socket = io("http://localhost:5000");
+    socket = io("http://localhost:5000/");
 
     socket.on("waiting", (data) => {
       setWaiting(true);
@@ -67,10 +69,8 @@ export default function Home() {
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-900 via-blue-900 to-black p-4 overflow-hidden">
 
-      {/* Animated Background Glow */}
       <div className="absolute inset-0 bg-purple-700/20 rounded-full animate-pulse-slow blur-3xl z-0"></div>
 
-      {/* Header Logout */}
       <div className="absolute top-4 right-4 z-10">
         <button
           onClick={handleLogout}
@@ -80,7 +80,6 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Main Title */}
       <h1 className="text-4xl sm:text-5xl text-white font-bold mb-12 text-center animate-pulse z-10">
         Tic-Tac-Toe Lobby
       </h1>

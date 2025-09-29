@@ -8,6 +8,7 @@ export default function Register() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ username: "", email: "", password: "" });
 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -38,12 +39,11 @@ export default function Register() {
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-r from-purple-900 via-blue-900 to-black p-4 overflow-hidden">
 
-      {/* Register Form */}
       <form
         onSubmit={handleSubmit}
         className="relative z-10 bg-black/70 p-10 rounded-3xl shadow-2xl max-w-md w-full space-y-6 backdrop-blur-sm sm:p-8 sm:rounded-2xl"
       >
-        {/* Game icon / header */}
+
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center text-white text-3xl font-bold animate-bounce">
             X/O
@@ -52,7 +52,6 @@ export default function Register() {
 
         <h1 className="text-3xl font-bold text-white text-center mb-4">Register</h1>
 
-        {/* Username */}
         <div className="relative">
           <FaUser className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400" />
           <input
@@ -66,7 +65,6 @@ export default function Register() {
           />
         </div>
 
-        {/* Email */}
         <div className="relative">
           <FaEnvelope className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400" />
           <input
@@ -80,7 +78,6 @@ export default function Register() {
           />
         </div>
 
-        {/* Password */}
         <div className="relative">
           <FaLock className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400" />
           <input
@@ -94,7 +91,6 @@ export default function Register() {
           />
         </div>
 
-        {/* Register Button */}
         <button
           type="submit"
           className="w-full py-3 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-xl shadow-lg transform transition-all hover:scale-105"

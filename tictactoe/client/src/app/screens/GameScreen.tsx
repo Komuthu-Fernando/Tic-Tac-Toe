@@ -20,6 +20,7 @@ export default function GameScreen() {
   const location = useLocation();
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
+  const API_URL = import.meta.env.API_URL;
 
   let userId: number = -1;
   let username = 'Player';
@@ -50,7 +51,7 @@ export default function GameScreen() {
       return;
     }
 
-    socket = io('http://localhost:5000');
+    socket = io("http://localhost:5000");
 
     socket.on('connect', () => {
       socket?.emit('join_room', { roomId, userId });

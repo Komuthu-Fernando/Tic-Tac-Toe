@@ -19,13 +19,13 @@ app.use("/api/leaderboard", leaderboardRoutes);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*", // for now, allow all
+    origin: "*", 
     methods: ["GET", "POST"]
   }
 });
 
-// initialize socket handling
+
 handleSockets(io);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

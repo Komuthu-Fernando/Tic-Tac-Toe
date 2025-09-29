@@ -8,17 +8,17 @@ type Board = (Mark | null)[];
 
 interface RoomState {
   roomId: string;
-  sockets: { [socketId: string]: number }; // socketId -> userId
-  players: { [userId: number]: Mark }; // userId -> mark
+  sockets: { [socketId: string]: number };
+  players: { [userId: number]: Mark }; 
   board: Board;
-  turn: Mark; // whose turn currently
+  turn: Mark; 
   counters: {
     X: { rows: number[]; cols: number[]; diag: number; antiDiag: number };
     O: { rows: number[]; cols: number[]; diag: number; antiDiag: number };
   };
   moves: Array<{ index: number; userId: number; mark: Mark; ts: string }>;
   status: 'waiting' | 'ongoing' | 'finished';
-  paused: boolean; // new field
+  paused: boolean;
 }
 
 const rooms: Map<string, RoomState> = new Map();
@@ -243,13 +243,11 @@ export const handleSockets = (io: Server) => {
               }
             }
 
-            // ---- Notify leaderboard update ----
             io.emit('leaderboard_update');
           } catch (err) {
             console.error('Error persisting finished game/stats:', err);
           }
 
-          // notify game over
           io.to(roomId).emit('game_over', {
             winner,
             board: state.board,
@@ -297,7 +295,7 @@ export const handleSockets = (io: Server) => {
         socket.emit('room_state', {
           board: state.board,
           turn: state.turn,
-          players: playerData, // send array with username, userId, mark
+          players: playerData, 
           moves: state.moves,
           status: state.status,
         });

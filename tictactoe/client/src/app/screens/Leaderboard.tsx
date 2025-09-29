@@ -15,6 +15,7 @@ interface LeaderboardEntry {
 export default function Leaderboard() {
   const navigate = useNavigate();
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const API_URL = import.meta.env.API_URL;
 
   const fetchLeaderboard = async () => {
     const res = await fetch("http://localhost:5000/api/leaderboard");
@@ -25,7 +26,7 @@ export default function Leaderboard() {
   useEffect(() => {
     fetchLeaderboard();
 
-    socket = io("http://localhost:5000");
+    socket = io(API_URL);
 
     socket.on("leaderboard_update", () => {
       fetchLeaderboard();

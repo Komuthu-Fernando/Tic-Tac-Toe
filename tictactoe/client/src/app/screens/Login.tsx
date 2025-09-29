@@ -8,6 +8,8 @@ export default function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
 
+  const API_URL = import.meta.env.API_URL;
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -38,12 +40,10 @@ export default function Login() {
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-r from-purple-900 via-blue-900 to-black p-4 overflow-hidden">
 
-      {/* Login Form */}
       <form
         onSubmit={handleSubmit}
         className="relative z-10 bg-black/70 p-10 rounded-3xl shadow-2xl max-w-md w-full space-y-6 backdrop-blur-sm sm:p-8 sm:rounded-2xl"
       >
-        {/* Game icon / header */}
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center text-white text-3xl font-bold animate-bounce">
             X/O
@@ -52,7 +52,6 @@ export default function Login() {
 
         <h1 className="text-3xl font-bold text-white text-center mb-4">Login</h1>
 
-        {/* Email */}
         <div className="relative">
           <FaEnvelope className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400" />
           <input
@@ -66,7 +65,6 @@ export default function Login() {
           />
         </div>
 
-        {/* Password */}
         <div className="relative">
           <FaLock className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400" />
           <input
@@ -80,7 +78,6 @@ export default function Login() {
           />
         </div>
 
-        {/* Login Button */}
         <button
           type="submit"
           className="w-full py-3 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-xl shadow-lg transform transition-all hover:scale-105"

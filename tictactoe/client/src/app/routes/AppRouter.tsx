@@ -11,7 +11,6 @@ import "react-toastify/dist/ReactToastify.css";
 export default function AppRouter() {
   return (
     <>
-      {/* ToastContainer rendered globally */}
       <ToastContainer
         position="top-center"
         autoClose={2000}
