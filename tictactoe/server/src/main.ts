@@ -5,6 +5,7 @@ import http from "http";
 import { Server } from "socket.io";
 import authRoutes from "./routes/auth.routes";
 import { handleSockets } from "./services/socket.service";
+import leaderboardRoutes from "./routes/leaderboard.routes";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/leaderboard", leaderboardRoutes);
 
 const server = http.createServer(app);
 const io = new Server(server, {

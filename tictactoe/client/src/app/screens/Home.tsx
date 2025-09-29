@@ -50,8 +50,33 @@ export default function Home() {
     socket.emit("join_game", { userId });
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login"); // redirect back to login
+  };
+
+  const goToLeaderboard = () => {
+    navigate("/leaderboard");
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-900 via-blue-900 to-black p-4">
+      {/* Header with Logout & Leaderboard */}
+      <div className="absolute top-4 right-4 flex space-x-4">
+        <button
+          onClick={goToLeaderboard}
+          className="px-4 py-2 bg-blue-600 text-white font-bold rounded-lg shadow-md hover:bg-blue-700 transition-all"
+        >
+          Leaderboard
+        </button>
+        <button
+          onClick={handleLogout}
+          className="px-4 py-2 bg-red-600 text-white font-bold rounded-lg shadow-md hover:bg-red-700 transition-all"
+        >
+          Logout
+        </button>
+      </div>
+
       <h1 className="text-4xl text-white font-bold mb-8 text-center animate-pulse">
         Tic-Tac-Toe Lobby
       </h1>

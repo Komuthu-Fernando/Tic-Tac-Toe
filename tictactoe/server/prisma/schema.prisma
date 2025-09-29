@@ -23,9 +23,10 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations
-  gamesAsX Game[] @relation("PlayerX")
-  gamesAsO Game[] @relation("PlayerO")
-  Game     Game[]
+  gamesAsX  Game[]     @relation("PlayerX")
+  gamesAsO  Game[]     @relation("PlayerO")
+  Game      Game[]
+  UserStats UserStats?
 }
 
 model Game {
@@ -43,4 +44,14 @@ model Game {
 
   // optional relation to winner user
   winner User? @relation(fields: [winnerId], references: [id])
+}
+
+model UserStats {
+  id     Int @id @default(autoincrement())
+  userId Int @unique
+  wins   Int @default(0)
+  losses Int @default(0)
+  draws  Int @default(0)
+
+  user User @relation(fields: [userId], references: [id])
 }

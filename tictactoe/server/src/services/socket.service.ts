@@ -91,8 +91,19 @@ export const handleSockets = (io: Server) => {
       io.to(roomId).emit('game_started', {
         roomId,
         players: [
-          { userId: opponent.userId, mark: 'X' },
-          { userId, mark: 'O' },
+          {
+            userId: opponent.userId,
+            mark: 'X',
+            username: (
+              await prisma.user.findUnique({ where: { id: opponent.userId } })
+            )?.username,
+          },
+          {
+            userId,
+            mark: 'O',
+            username: (await prisma.user.findUnique({ where: { id: userId } }))
+              ?.username,
+          },
         ],
         board: roomState.board,
         turn: roomState.turn,
@@ -185,7 +196,6 @@ export const handleSockets = (io: Server) => {
         });
 
         if (state.status === 'finished') {
-          // update DB game: set moves JSON and winnerId and status
           try {
             const dbUpdateData: any = {
               moves: state.moves,
@@ -193,23 +203,60 @@ export const handleSockets = (io: Server) => {
             };
             if (winner) dbUpdateData.winnerId = winner;
 
-            await prisma.game.update({
+            const game = await prisma.game.update({
               where: { roomId },
               data: dbUpdateData,
             });
+
+            // ---- Update stats ----
+            if (winner) {
+              // winner gets +1 win
+              await prisma.userStats.upsert({
+                where: { userId: winner },
+                update: { wins: { increment: 1 } },
+                create: { userId: winner, wins: 1 },
+              });
+
+              // loser gets +1 loss
+              const loserId =
+                game.playerXId === winner ? game.playerOId : game.playerXId;
+              if (loserId) {
+                await prisma.userStats.upsert({
+                  where: { userId: loserId },
+                  update: { losses: { increment: 1 } },
+                  create: { userId: loserId, losses: 1 },
+                });
+              }
+            } else {
+              // draw → both get +1 draw
+              await prisma.userStats.upsert({
+                where: { userId: game.playerXId },
+                update: { draws: { increment: 1 } },
+                create: { userId: game.playerXId, draws: 1 },
+              });
+              if (game.playerOId) {
+                await prisma.userStats.upsert({
+                  where: { userId: game.playerOId },
+                  update: { draws: { increment: 1 } },
+                  create: { userId: game.playerOId, draws: 1 },
+                });
+              }
+            }
+
+            // ---- Notify leaderboard update ----
+            io.emit('leaderboard_update');
           } catch (err) {
-            console.error('Error persisting finished game:', err);
+            console.error('Error persisting finished game/stats:', err);
           }
 
           // notify game over
           io.to(roomId).emit('game_over', {
-            winner: winner, // userId or null for draw
+            winner,
             board: state.board,
             moves: state.moves,
           });
 
-          // optionally remove room state after some delay or keep for history
-          setTimeout(() => rooms.delete(roomId), 1000 * 60 * 5); // keep 5min
+          setTimeout(() => rooms.delete(roomId), 1000 * 60 * 5);
         }
       }
     );
