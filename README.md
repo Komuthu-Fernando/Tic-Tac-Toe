@@ -53,6 +53,6 @@ Modern responsive UI
 
 🔮 Future Improvements
 
-Role-based authorization
-Ranking system with ELO/MMR
+Role-based authorization,
+Ranking system with ELO/MMR,
 Support for multiple game types
