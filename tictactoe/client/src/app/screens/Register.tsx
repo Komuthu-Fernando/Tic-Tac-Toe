@@ -20,7 +20,7 @@ export default function Register() {
 
       if (res.ok) {
         alert("Registration successful!");
-        navigate("/login");
+        navigate("/", { replace: true });
       } else {
         const data = await res.json();
         alert(data.message || "Error registering user");
@@ -78,7 +78,7 @@ export default function Register() {
 
         <p className="text-center text-gray-300">
           Already have an account?{" "}
-          <Link to="/login" className="text-purple-400 underline">
+          <Link to="/" className="text-purple-400 underline">
             Login
           </Link>
         </p>

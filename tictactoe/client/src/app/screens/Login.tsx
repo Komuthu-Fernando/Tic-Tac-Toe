@@ -22,8 +22,7 @@ export default function Login() {
       if (res.ok) {
         localStorage.setItem("token", data.token);
         alert("Login successful!");
-        navigate("/home");
-        // navigate to game lobby or home
+        navigate("/home", { replace: true });
       } else {
         alert(data.message || "Login failed");
       }
@@ -71,7 +70,7 @@ export default function Login() {
 
         <p className="text-center text-gray-300">
           Don't have an account?{" "}
-          <Link to="/" className="text-purple-400 underline">
+          <Link to="/register" className="text-purple-400 underline">
             Register
           </Link>
         </p>

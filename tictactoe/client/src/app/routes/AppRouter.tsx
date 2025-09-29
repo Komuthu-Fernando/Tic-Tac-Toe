@@ -3,14 +3,29 @@ import Register from "../screens/Register";
 import Login from "../screens/Login";
 import Home from "../screens/Home";
 import GameScreen from "../screens/GameScreen";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 export default function AppRouter() {
   return (
     <Routes>
-      <Route path="/" element={<Register />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/game/:roomId" element={<GameScreen />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/" element={<Login />} />
+      <Route
+        path="/home"
+        element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/game/:roomId"
+        element={
+          <ProtectedRoute>
+            <GameScreen />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
